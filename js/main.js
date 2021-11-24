@@ -14,9 +14,19 @@ var gGame = {
     markedCount: gLevel.mines,
     secsPassed: 0
 }
+var gLives=3
 
 function init() {
+    var elLives = document.querySelector('.live .lives')
+    elLives.innerText='3'
     gGame.isOn = true
+    gGame.shownCount=0
+    gLives=3
+    gGame.markedCount = gLevel.mines;
+    var elDiv = document.querySelector('.game-status')
+    elDiv.style.display = 'none'
+    var elRestartBtn = document.querySelector('.restart')
+    elRestartBtn.innerText = '😀'
     gBoard = buildBoard()
     renderBoard(gBoard)
 
@@ -50,28 +60,33 @@ function buildBoard() {
 
 
 function cellClicked(value, i, j) {
-    console.log(value);
+    var elLives = document.querySelector('.live .lives')
+    
     if (!gGame.isOn) return
     if (value.classList.contains('mine')) {
+        if (gLives>1){
+            gLives-- 
+            alert('This is a mine')
+            elLives.innerText = gLives
+            return
+        } 
         if (gBoard[i][j].isMine) gBoard[i][j].isMarked = false
         var elMines = document.querySelectorAll('.mine')
         for (var i = 0; i < elMines.length; i++) {
             elMines[i].style.textIndent = '0'
             if (elMines[i].innerText !== MINE) elMines[i].innerText = MINE
         }
+        victory(false)
+        elLives.innerText = '0'
         gGame.isOn = false
     }
     if (value.classList.contains('safe')) {
         value.style.textIndent = '0'
-        if (gBoard[i][j].minesAroundCount === 0) {
-            value.innerText=''
-            expandNegs(gBoard,i,j)
-        }else {
             value.innerText = gBoard[i][j].minesAroundCount
             gBoard[i][j].isShown = true
             gBoard[i][j].isSafe = true
-        }
-        
+            if (gBoard[i][j].isMarked) gGame.markedCount++
+        checkVictory()
     }
 
 
@@ -116,47 +131,50 @@ function countMinesAroundCell(mat, cellI, cellJ) {
 }
 
 function cellMarked(value, i, j) {
+    if (!gGame.isOn) return
     if (gBoard[i][j].isShown) return
     if (!gBoard[i][j].isMarked && !gBoard[i][j].isShown) {
         value.style.textIndent = '0'
         value.innerText = FLAG
         gBoard[i][j].isMarked = true
+        gGame.markedCount--
+        checkVictory()
 
     } else if (gBoard[i][j].isMarked) {
+        gGame.markedCount=gLevel.mines
         gBoard[i][j].isMarked = false
         gBoard[i][j].isShown = false
         value.innerText = ' '
     }
 }
 
-function easyMode() {
-    gLevel.size = 4
-    gLevel.mines = 2
-    init()
-}
 
-function mediumMode() {
-    gLevel.size = 8
-    gLevel.mines = 12
-    init()
-}
 
-function hardMode() {
-    gLevel.size = 12
-    gLevel.mines = 30
-    init()
-}
-
-function expandNegs(board, i, j) {
-    for (var x = i - 1; x <= i + 1; x++) {
-        if (x < 0 || x > board.length - 1) continue;
-        for (var y = j - 1; y <= j + 1; y++) {
-            if (y < 0 || y > board.length - 1) continue;
-            if (x === i && y === j) continue;
-            if (board[i][j].minesAroundCount === 0 &&
-                board[i][j].isMarked === false) {
-                        
-            }
+function checkVictory() {
+    gGame.shownCount = 0
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            if (gBoard[i][j].isShown === true) gGame.shownCount++
         }
     }
+    console.log('showncount', gGame.shownCount);
+    console.log('markedcount', gGame.markedCount);
+    if (gGame.markedCount === 0 && gGame.shownCount === ((gLevel.size ** 2) - gLevel.mines)) {
+        console.log('showncount',gGame.shownCount);
+        console.log('markedcount', gGame.markedCount);
+        victory(true)
+    }
 }
+function victory(state) {
+    gGame.isOn = false
+    var elDiv = document.querySelector('.game-status')
+    var elP = elDiv.querySelector('p')
+    var elRestartBtn = document.querySelector('.restart')
+    elDiv.style.display='inline-block'
+    if (state) elP.innerText = 'Great Job!', elRestartBtn.innerText ='😇'
+    else elP.innerText = 'Game lost!', elRestartBtn.innerText = '⚰️'
+    
+}
+
+
+

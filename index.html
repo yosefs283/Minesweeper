@@ -10,17 +10,25 @@
 <body oncontextmenu="return false;" onload="init()">
 
     <h1>Minesweeper Game!</h1>
+    <button class="restart" onclick="init()">😀</button> <br>
+    <div class="live">Lives: <span class="lives">3</span></div>
     <button class="easy" onclick="easyMode()">Easy</button>
     <button class="medium" onclick="mediumMode()">Medium</button>
     <button class="hard" onclick="hardMode()">Hard</button>
     <table class="board" border="1">
         
     </table>
-
+    <div class="game-status hidden">
+        <p></p>
+        <br>
+        <button onclick="playAgain()">Play again?</button>
+    </div>
+    
   
 
 
 <script src="js/util.js"></script>
+<script src="js/buttons.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
