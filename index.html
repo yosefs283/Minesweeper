@@ -5,21 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Document</title>
+    <title>Minesweeper game!</title>
 </head>
 <body oncontextmenu="return false;" onload="init()">
 
     <h1>Minesweeper Game!</h1>
     <button class="restart" onclick="init()">😀</button> <br>
+    
     <div class="live">Lives: <span class="lives">3</span></div>
+    <div class="time">Time: <span class="timer">0</span></div>
     <button class="easy" onclick="easyMode()">Easy</button>
     <button class="medium" onclick="mediumMode()">Medium</button>
     <button class="hard" onclick="hardMode()">Hard</button>
     <table class="board" border="1">
         
     </table>
+    <div class="modal"></div>
     <div class="game-status hidden">
-        <p></p>
+        <p class="user-msg"></p>
         <br>
         <button onclick="playAgain()">Play again?</button>
     </div>

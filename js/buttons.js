@@ -1,3 +1,4 @@
+'use strict'
 function easyMode() {
     gLevel.size = 4
     gLevel.mines = 2
