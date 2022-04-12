@@ -1,2 +1,1 @@
-# Sprint1
 Minesweeper
